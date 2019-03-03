@@ -98,7 +98,7 @@ def GetAvailableMoves(board):
     for i, val in enumerate(board):
         if val == " ":
             # add position to list if the cell is empty
-            availableMoves.append(i)
+            availableMoves.append(int(i))
     return availableMoves
 
 def EvaluateScore(board, cell_1, cell_2, cell_3):
@@ -186,9 +186,9 @@ def Minimax(board, player, depth):
     # Board not filled up yet
     else:
         # Iterate through possible moves
-        for i in range(len(availableMoves)):
+        for i in availableMoves:
                 # Simulate move on board
-                tmpBoard[availableMoves[i]] = player[1]
+                tmpBoard[i] = player[1]
                 # After Player moves, determine best move for AI
                 if player[0] == True:
                     currentScore = Minimax(tmpBoard, m_computer, depth-1)[0]
@@ -201,7 +201,7 @@ def Minimax(board, player, depth):
                     if currentScore > bestScore:
                         bestScore = currentScore
                         bestMove = i
-                tmpBoard[availableMoves[i]] = " "
+                tmpBoard[i] = " "
 
     return (bestScore, bestMove)
 

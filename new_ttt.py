@@ -44,11 +44,11 @@ def GoesFirst():
 def ChooseDifficulty():
     difficulty = input("Please choose computer difficulty: 1 = EASY, 2 = INTERMEDIATE, 3 = HARD\n")
     if difficulty == "1":
-        return 2
+        return 1
     elif difficulty == "2":
-        return 4
+        return 2
     elif difficulty == "3":
-        return 6
+        return 3
     else:
         print("Please choose a valid difficulty level.\n")
         ChooseDifficulty()

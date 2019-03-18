@@ -46,9 +46,9 @@ def ChooseDifficulty():
     if difficulty == "1":
         return 1
     elif difficulty == "2":
-        return 2
-    elif difficulty == "3":
         return 3
+    elif difficulty == "3":
+        return 6
     else:
         print("Please choose a valid difficulty level.\n")
         ChooseDifficulty()
@@ -83,6 +83,8 @@ def Win(board, player):
     # / - diagonal
     elif board[2] == player[1] and board[4] == player[1] and board[6] == player[1]:
         return True
+    else:
+        return False
 
 # Checking if given board evaluates to a tie between both players
 def Tie(board):
@@ -102,48 +104,61 @@ def GetAvailableMoves(board):
     return availableMoves
 
 def EvaluateScore(board, cell_1, cell_2, cell_3):
-    # bestScore = 1, if line starts with "O"
-    # bestScore = -1, if line starts with "X"
-    if board[cell_1] == "O":
-        bestScore = 1
-    elif board[cell_1] == "X":
-        bestScore = -1
+    if board[cell_1] == m_player[1]:
+        if board[cell_2] == m_player[1]:
+            if board[cell_3] == m_player[1]:
+                return -100
+            elif board[cell_3] == m_computer[1]:
+                return 0
+            else:
+                return -10
+        elif board[cell_2] == m_computer[1]:
+            return 0
+        else:
+            if board[cell_3] == m_player[1]:
+                return -10
+            elif board[cell_3] == m_computer[1]:
+                return 0
+            else:
+                return -1
+    elif board[cell_1] == m_computer[1]:
+        if board[cell_2] == m_player[1]:
+            return 0
+        elif board[cell_2] == m_computer[1]:
+            if board[cell_3] == m_player[1]:
+                return 0
+            elif board[cell_3] == m_computer[1]:
+                return 100
+            else:
+                return 10
+        else:
+            if board[cell_3] == m_player[1]:
+                return 0
+            elif board[cell_3] == m_computer[1]:
+                return 10
+            else:
+                return 1
     else:
-        bestScore = 0
-
-    # bestScore times 10 if 2nd piece in the line matches 1st piece
-    if board[cell_2] == "O":
-        if bestScore == 1:
-            bestScore *= 10
-        elif bestScore == -1:
-            bestScore =  0
+        if board[cell_2] == m_player[1]:
+            if board[cell_3] == m_player[1]:
+                return -10
+            elif board[cell_3] == m_computer[1]:
+                return 0
+            else:
+                return -1
+        elif board[cell_2] == m_computer[1]:
+            if board[cell_3] == m_player[1]:
+                return 0
+            elif board[cell_3] == m_computer[1]:
+                return 10
+            else:
+                return 1
         else:
-            bestScore = 1
-    elif board[cell_2] == "X":
-        if bestScore == -1:
-            bestScore *= 10
-        elif bestScore == 1:
-            bestScore =  0
-        else:
-            bestScore = -1
-
-    #bestScore times 10 again if 3rd piece matches 2nd and 1st pieces
-    if board[cell_3] == "O":
-        if bestScore > 0:
-            bestScore *= 10
-        elif bestScore < 0:
-            return 0
-        else:
-            bestScore = 1
-    elif board[cell_3] == "X":
-        if bestScore < 0:
-            bestScore *= 10
-        elif bestScore > 0:
-            return 0
-        else:
-            bestScore = -1
-
-    return bestScore
+            if board[cell_3] == m_player[1]:
+                return -1
+            elif board[cell_3] == m_computer[1]:
+                return 1
+            else: return 0
 
 # Evaluate score of a board
 def EvaluateBoard(board):
@@ -187,21 +202,19 @@ def Minimax(board, player, depth):
     else:
         # Iterate through possible moves
         for i in availableMoves:
-                # Simulate move on board
-                tmpBoard[i] = player[1]
-                # After Player moves, determine best move for AI
-                if player[0] == True:
-                    currentScore = Minimax(tmpBoard, m_computer, depth-1)[0]
-                    if currentScore < bestScore:
-                        bestScore = currentScore
-                        bestMove = i
-                # After AI moves, determine best move for Player
-                else:
-                    currentScore = Minimax(tmpBoard, m_player, depth-1)[0]
-                    if currentScore > bestScore:
-                        bestScore = currentScore
-                        bestMove = i
-                tmpBoard[i] = " "
+            # Simulate move on board
+            tmpBoard[i] = player[1]
+            if player[0] == True:
+                currentScore = Minimax(tmpBoard, m_computer, depth-1)[0]
+                if currentScore < bestScore:
+                    bestScore = currentScore
+                    bestMove = i
+            else:
+                currentScore = Minimax(tmpBoard, m_player, depth-1)[0]
+                if currentScore > bestScore:
+                    bestScore = currentScore
+                    bestMove = i
+            tmpBoard[i] = " "
 
     return (bestScore, bestMove)
 
